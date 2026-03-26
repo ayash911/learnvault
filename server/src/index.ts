@@ -1,21 +1,12 @@
-import cors from "cors";
-import express from "express";
-import morgan from "morgan";
-import swaggerUi from "swagger-ui-express";
-import YAML from "yaml";
-import { z } from "zod";
-
-import { errorHandler } from "./middleware/error.middleware";
-import { buildOpenApiSpec } from "./openapi";
-import { coursesRouter } from "./routes/courses.routes";
-import { eventsRouter } from "./routes/events.routes";
-import { healthRouter } from "./routes/health.routes";
-import { validatorRouter } from "./routes/validator.routes";
-import { commentsRouter } from "./routes/comments.routes";
-import { leaderboardRouter } from "./routes/leaderboard.routes";
-import { initDb } from "./db/index";
+import cors from "cors"
+import express from "express"
+import morgan from "morgan"
+import swaggerUi from "swagger-ui-express"
+import YAML from "yaml"
+import { z } from "zod"
 
 import { initDb } from "./db/index"
+
 import { createNonceStore } from "./db/nonce-store"
 import { errorHandler } from "./middleware/error.middleware"
 import { globalLimiter } from "./middleware/rate-limit.middleware"
@@ -26,7 +17,9 @@ import { commentsRouter } from "./routes/comments.routes"
 import { coursesRouter } from "./routes/courses.routes"
 import { eventsRouter } from "./routes/events.routes"
 import { healthRouter } from "./routes/health.routes"
+import { leaderboardRouter } from "./routes/leaderboard.routes"
 import { createMeRouter } from "./routes/me.routes"
+import { treasuryRouter } from "./routes/treasury.routes"
 import { uploadRouter } from "./routes/upload.routes"
 import { validatorRouter } from "./routes/validator.routes"
 import { createAuthService } from "./services/auth.service"
@@ -59,12 +52,12 @@ const isProduction = env.NODE_ENV === "production"
 let jwtPrivateKey = env.JWT_PRIVATE_KEY
 let jwtPublicKey = env.JWT_PUBLIC_KEY
 
-app.use("/api", healthRouter);
-app.use("/api", coursesRouter);
-app.use("/api", validatorRouter);
-app.use("/api", eventsRouter);
-app.use("/api", commentsRouter);
-app.use("/api", leaderboardRouter);
+app.use("/api", healthRouter)
+app.use("/api", coursesRouter)
+app.use("/api", validatorRouter)
+app.use("/api", eventsRouter)
+app.use("/api", commentsRouter)
+app.use("/api", leaderboardRouter)
 
 const nonceStore = createNonceStore(env.REDIS_URL)
 const jwtService = createJwtService(jwtPrivateKey, jwtPublicKey)
@@ -90,6 +83,7 @@ app.use("/api", eventsRouter)
 app.use("/api", commentsRouter)
 app.use("/api", adminMilestonesRouter)
 app.use("/api", uploadRouter)
+app.use("/api/treasury", treasuryRouter)
 
 // Start event poller (non-prod only for now)
 if (process.env.NODE_ENV !== "production") {
